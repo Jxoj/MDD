@@ -193,7 +193,7 @@
         </div>
       </div>
 
-      <!-- Cool Features Grid -->
+      <!-- Features Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
         <div class="p-6 border border-neutral-800 rounded bg-neutral-950/60 hover:border-neutral-700 transition-colors">
           <div class="w-10 h-10 bg-neutral-900 border border-neutral-800 rounded flex items-center justify-center mb-4 text-white">
@@ -273,12 +273,26 @@
         
         <!-- Flashing Controls Form -->
         <div class="space-y-6">
-          <div class="space-y-2">
+          <div class="space-y-3">
             <label class="block text-xs font-mono uppercase text-neutral-400 tracking-wider">Target Firmware Version</label>
             <select id="version-select" class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors">
-              <option value="">Loading available versions...</option>
+              <option value="latest">Latest</option>
             </select>
-            <p id="version-desc" class="text-xs text-neutral-500 min-h-[1.25rem]"></p>
+            
+            <!-- Metadata Pointers & Tag Pill Box -->
+            <div id="version-meta-box" class="flex flex-wrap items-center gap-2 pt-1">
+              <span id="version-tag-pill" class="px-2 py-0.5 bg-neutral-900 text-neutral-300 border border-neutral-800 font-mono text-[11px] rounded">
+                Tag: --
+              </span>
+              <span id="version-prerelease-pill" class="hidden px-2 py-0.5 bg-amber-950/80 text-amber-300 border border-amber-800/80 font-mono text-[11px] rounded">
+                Prerelease
+              </span>
+              <span id="version-date-pill" class="px-2 py-0.5 bg-neutral-900 text-neutral-400 border border-neutral-800 font-mono text-[11px] rounded">
+                --
+              </span>
+            </div>
+
+            <p id="version-desc" class="text-xs text-neutral-400 leading-relaxed min-h-[2.5rem] pt-1"></p>
           </div>
 
           <div class="p-4 border border-neutral-800 rounded bg-neutral-950 space-y-3">
@@ -334,29 +348,28 @@
 
     <!-- ------------------ TAB 4: VERSIONS ------------------ -->
     <section id="tab-content-versions" class="hidden space-y-6">
-      <div class="border-b border-neutral-800 pb-4">
-        <h2 class="text-2xl font-bold tracking-tight">Available Firmware Versions</h2>
-        <p class="text-sm text-neutral-400">Browse official MDD release binaries and direct download URLs</p>
+      <div class="border-b border-neutral-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">Available Firmware Versions</h2>
+          <p class="text-sm text-neutral-400">Browse official MDD release binaries, filter tags, or trigger quick WebUSB installs</p>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="relative min-w-[280px]">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs text-neutral-500"></i>
+          <input 
+            type="text" 
+            id="version-search-input" 
+            oninput="renderVersionsTable()" 
+            placeholder="Search by name or tag (e.g., v1.2, Release)..." 
+            class="w-full bg-neutral-950 border border-neutral-800 rounded pl-9 pr-3 py-1.5 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
+          />
+        </div>
       </div>
 
-      <div class="border border-neutral-800 rounded overflow-x-auto bg-neutral-950">
-        <table class="w-full text-left text-sm font-sans">
-          <thead>
-            <tr class="border-b border-neutral-800 bg-black text-neutral-400 font-mono text-xs uppercase tracking-wider">
-              <th class="px-6 py-3">Version Name</th>
-              <th class="px-6 py-3">Tag</th>
-              <th class="px-6 py-3">Description</th>
-              <th class="px-6 py-3 text-right">Binary Link</th>
-            </tr>
-          </thead>
-          <tbody id="versions-table-body" class="divide-y divide-neutral-800 text-neutral-300 font-mono text-xs">
-            <tr>
-              <td colspan="4" class="px-6 py-8 text-center text-neutral-500">
-                <i class="fa-solid fa-circle-notch animate-spin mr-2"></i> Loading version list...
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Versions List Cards/Table -->
+      <div id="versions-list-container" class="space-y-4">
+        <!-- Dynamic Release Rows Rendered Here -->
       </div>
     </section>
 
@@ -427,6 +440,29 @@
 
   </main>
 
+  <!-- ==================== FULL DESCRIPTION MODAL ==================== -->
+  <div id="desc-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-neutral-950 border border-neutral-800 rounded-lg w-full max-w-xl p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-start justify-between border-b border-neutral-800 pb-3">
+        <div>
+          <h3 id="modal-title" class="text-lg font-bold text-white">Release Notes</h3>
+          <span id="modal-subtitle" class="text-xs font-mono text-neutral-400"></span>
+        </div>
+        <button onclick="closeDescriptionModal()" class="text-neutral-500 hover:text-white transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div id="modal-body" class="text-sm text-neutral-300 leading-relaxed font-sans max-h-80 overflow-y-auto pr-2 space-y-2"></div>
+
+      <div class="flex justify-end pt-2 border-t border-neutral-800">
+        <button onclick="closeDescriptionModal()" class="px-4 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 text-xs font-mono border border-neutral-800 rounded">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== FOOTER ==================== -->
   <footer class="w-full border-t border-neutral-800 bg-black py-6 mt-12 text-center text-xs text-neutral-500 font-mono">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -442,13 +478,33 @@
   <script>
     // --- Global State ---
     let globalVersionsData = {
-      latest: "v1.0.0",
+      latest: "v1.2.0",
       versions: [
-        { name: "Latest (v1.0.0)", tag: "v1.0.0", description: "Latest stable release for MDD OS" },
-        { name: "v1.0.0 - Initial Release", tag: "v1.0.0", description: "Initial micro:bit display driver release" }
+        { 
+          name: "MDD OS 1.2.0", 
+          tag: "v1.2.0", 
+          description: "Major release introducing multi-buffered display rendering, 115200 WebUSB serial logging pipeline, improved shield hardware drivers, and reduced flash footprint.",
+          releaseDate: "2026-10-15",
+          prerelease: false
+        },
+        { 
+          name: "MDD OS 1.1.0-beta", 
+          tag: "v1.1.0-beta", 
+          description: "Experimental build featuring dynamic micro:bit matrix frame buffering and custom macro rendering routines.",
+          releaseDate: "2026-08-02",
+          prerelease: true
+        },
+        { 
+          name: "MDD OS 1.0.0", 
+          tag: "v1.0.0", 
+          description: "Initial open-source release of MDD OS featuring baseline hardware abstraction layer and WebUSB flashing.",
+          releaseDate: "2026-05-10",
+          prerelease: false
+        }
       ]
     };
 
+    let latestMatchedRelease = null;
     let isConnected = false;
     let mockSerialInterval = null;
 
@@ -479,26 +535,29 @@
         }
       });
 
-      // Update URL search parameters without page reload
       if (updateUrl) {
         const newUrl = new URL(window.location.href);
         newUrl.searchParams.set('tab', targetTab);
         window.history.pushState({ tab: targetTab }, '', newUrl.toString());
       }
 
-      // Special Tab Initializers
       if (targetTab === 'overview') {
         loadReadme();
       }
     }
 
-    // Handle Browser Back / Forward Button Navigation
-    window.addEventListener('popstate', (event) => {
+    window.addEventListener('popstate', () => {
       const activeTab = getTabFromUrl();
       switchTab(activeTab, false);
     });
 
-    // --- Version Loading & Badge Display ---
+    // --- Helper: Append (Latest) if missing ---
+    function formatLatestTitle(titleStr) {
+      if (!titleStr) return "Latest";
+      return titleStr.toLowerCase().includes('(latest)') ? titleStr : `${titleStr} (Latest)`;
+    }
+
+    // --- Version Loading & Matching Logic ---
     async function fetchVersionsData() {
       const badgeEl = document.getElementById('latest-version-badge');
       try {
@@ -506,94 +565,232 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         
-        if (data && data.latest) {
+        if (data && data.versions) {
           globalVersionsData = data;
-          const latestName = data.latest;
-          badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${latestName}`;
         } else {
-          throw new Error('Invalid format');
+          throw new Error('Invalid JSON format');
         }
       } catch (err) {
-        console.warn("Could not fetch /versions/all.json, attempting fallback URL or mock data", err);
-        // Secondary fallback fetch attempt
+        console.warn("Primary fetch /versions/all.json failed, trying fallback...", err);
         try {
           const fallbackRes = await fetch('https://jxoj.github.io/MDD/versions/all.json');
           if (fallbackRes.ok) {
-            const fbData = await fallbackRes.json();
-            globalVersionsData = fbData;
-            badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${fbData.latest}`;
-            populateVersionUI();
-            return;
+            globalVersionsData = await fallbackRes.json();
           }
-        } catch(e) {}
+        } catch(e) {
+          // Keep internal mock structure if network fails completely
+        }
+      }
 
-        // Fallback display error if both fetch attempts fail
+      // 1. Match 'latest' value to release object (by name or tag)
+      const targetLatest = globalVersionsData.latest || "";
+      latestMatchedRelease = globalVersionsData.versions.find(
+        v => v.name === targetLatest || v.tag === targetLatest
+      ) || globalVersionsData.versions[0] || null;
+
+      // 2. Render top-right badge
+      if (latestMatchedRelease) {
+        const badgeTitle = formatLatestTitle(latestMatchedRelease.name || latestMatchedRelease.tag);
+        badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${badgeTitle}`;
+      } else if (globalVersionsData.latest) {
+        badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${formatLatestTitle(globalVersionsData.latest)}`;
+      } else {
         badgeEl.innerHTML = `<span class="text-neutral-400">Error: Could not fetch versions</span>`;
       }
-      
-      populateVersionUI();
+
+      populateInstallerDropdown();
+      renderVersionsTable();
     }
 
-    function populateVersionUI() {
-      // 1. Installer Dropdown
+    // --- Installer Dropdown & Selection Updates ---
+    function populateInstallerDropdown() {
       const selectEl = document.getElementById('version-select');
       selectEl.innerHTML = '';
 
-      if (globalVersionsData.versions && globalVersionsData.versions.length > 0) {
+      // Add 'Latest' option at top
+      const latestOption = document.createElement('option');
+      latestOption.value = 'latest';
+      const latestName = latestMatchedRelease 
+        ? formatLatestTitle(latestMatchedRelease.name || latestMatchedRelease.tag)
+        : 'Latest Release';
+      latestOption.textContent = `Latest — ${latestName}`;
+      selectEl.appendChild(latestOption);
+
+      // Add individual version options
+      if (globalVersionsData.versions) {
         globalVersionsData.versions.forEach(v => {
           const opt = document.createElement('option');
           opt.value = v.tag;
-          opt.textContent = v.name;
+          const isLatest = latestMatchedRelease && (v.tag === latestMatchedRelease.tag || v.name === latestMatchedRelease.name);
+          opt.textContent = isLatest ? formatLatestTitle(v.name) : v.name;
           selectEl.appendChild(opt);
         });
-      } else {
-        const opt = document.createElement('option');
-        opt.value = "latest";
-        opt.textContent = `Latest (${globalVersionsData.latest || 'v1.0.0'})`;
-        selectEl.appendChild(opt);
       }
 
-      selectEl.onchange = updateVersionDescription;
-      updateVersionDescription();
+      selectEl.onchange = updateInstallerVersionMeta;
+      updateInstallerVersionMeta();
+    }
 
-      // 2. Versions Table
-      const tableBody = document.getElementById('versions-table-body');
-      tableBody.innerHTML = '';
+    function updateInstallerVersionMeta() {
+      const selectEl = document.getElementById('version-select');
+      const selectedVal = selectEl.value;
 
-      if (globalVersionsData.versions && globalVersionsData.versions.length > 0) {
-        globalVersionsData.versions.forEach(v => {
-          const hexUrl = v.tag === 'latest' 
-            ? 'https://jxoj.github.io/MDD/versions/latest.hex' 
-            : `https://jxoj.github.io/MDD/versions/${v.tag}.hex`;
+      const tagPill = document.getElementById('version-tag-pill');
+      const prereleasePill = document.getElementById('version-prerelease-pill');
+      const datePill = document.getElementById('version-date-pill');
+      const descEl = document.getElementById('version-desc');
 
-          const row = document.createElement('tr');
-          row.className = "hover:bg-neutral-900/50 transition-colors";
-          row.innerHTML = `
-            <td class="px-6 py-4 font-bold text-white">${v.name}</td>
-            <td class="px-6 py-4 text-neutral-400">${v.tag}</td>
-            <td class="px-6 py-4 text-neutral-400 max-w-md truncate">${v.description || 'MDD Firmware Binary'}</td>
-            <td class="px-6 py-4 text-right">
-              <a href="${hexUrl}" download class="inline-flex items-center gap-1.5 px-3 py-1 bg-neutral-900 hover:bg-white hover:text-black border border-neutral-800 rounded transition-colors text-xs">
-                <i class="fa-solid fa-download"></i> .hex
-              </a>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
+      let targetRelease = null;
+
+      if (selectedVal === 'latest') {
+        targetRelease = latestMatchedRelease;
+        tagPill.textContent = `Tag: ${latestMatchedRelease ? latestMatchedRelease.tag : 'latest.hex'}`;
+      } else {
+        targetRelease = globalVersionsData.versions.find(v => v.tag === selectedVal);
+        tagPill.textContent = `Tag: ${selectedVal}`;
+      }
+
+      if (targetRelease) {
+        descEl.textContent = targetRelease.description || 'MDD Firmware Compiled Binary';
+        datePill.textContent = targetRelease.releaseDate ? `Date: ${targetRelease.releaseDate}` : 'Date: Recent';
+        
+        if (targetRelease.prerelease) {
+          prereleasePill.classList.remove('hidden');
+        } else {
+          prereleasePill.classList.add('hidden');
+        }
+      } else {
+        descEl.textContent = 'Standard release binary for micro:bit hardware.';
+        datePill.textContent = 'Date: --';
+        prereleasePill.classList.add('hidden');
       }
     }
 
-    function updateVersionDescription() {
-      const selectEl = document.getElementById('version-select');
-      const descEl = document.getElementById('version-desc');
-      const selectedTag = selectEl.value;
+    // --- Render Versions Tab with Search, Badges & Quick Actions ---
+    function renderVersionsTable() {
+      const container = document.getElementById('versions-list-container');
+      const searchInput = document.getElementById('version-search-input');
+      const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
 
-      const found = globalVersionsData.versions.find(v => v.tag === selectedTag);
-      if (found && found.description) {
-        descEl.textContent = found.description;
-      } else {
-        descEl.textContent = "Official compiled hex binary for micro:bit hardware.";
+      container.innerHTML = '';
+
+      if (!globalVersionsData.versions || globalVersionsData.versions.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center border border-neutral-800 rounded bg-neutral-950 font-mono text-xs text-neutral-500">
+            No versions available.
+          </div>
+        `;
+        return;
       }
+
+      // Filter by Search Query matching Name or Tag
+      const filtered = globalVersionsData.versions.filter(v => {
+        const nameMatch = (v.name || '').toLowerCase().includes(query);
+        const tagMatch = (v.tag || '').toLowerCase().includes(query);
+        return nameMatch || tagMatch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center border border-neutral-800 rounded bg-neutral-950 font-mono text-xs text-neutral-500">
+            No releases found matching "${query}".
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(v => {
+        const isLatest = latestMatchedRelease && (v.tag === latestMatchedRelease.tag || v.name === latestMatchedRelease.name);
+        const displayName = isLatest ? formatLatestTitle(v.name) : v.name;
+        const hexUrl = isLatest 
+          ? 'https://jxoj.github.io/MDD/versions/latest.hex' 
+          : `https://jxoj.github.io/MDD/versions/${v.tag}.hex`;
+
+        const card = document.createElement('div');
+        card.className = `p-5 border ${isLatest ? 'border-neutral-700 bg-neutral-950' : 'border-neutral-800 bg-black'} rounded hover:border-neutral-700 transition-colors space-y-3`;
+
+        card.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="text-base font-bold text-white font-sans">${displayName}</h3>
+              
+              <!-- Tag Box Pill -->
+              <span class="px-2 py-0.5 bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-[11px] rounded">
+                ${v.tag}
+              </span>
+
+              <!-- Prerelease Badge -->
+              ${v.prerelease ? `
+                <span class="px-2 py-0.5 bg-amber-950/80 border border-amber-800/80 text-amber-300 font-mono text-[11px] rounded">
+                  Prerelease
+                </span>
+              ` : ''}
+
+              <!-- Latest Badge Pill -->
+              ${isLatest ? `
+                <span class="px-2 py-0.5 bg-white text-black font-mono text-[11px] font-bold rounded">
+                  LATEST
+                </span>
+              ` : ''}
+            </div>
+
+            <!-- Release Date -->
+            <span class="text-xs font-mono text-neutral-500">
+              <i class="fa-regular fa-calendar mr-1"></i>${v.releaseDate || 'N/A'}
+            </span>
+          </div>
+
+          <!-- Description Preview -->
+          <p class="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+            ${v.description || 'No description provided.'}
+          </p>
+
+          <!-- Actions Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-neutral-900">
+            <button onclick="openDescriptionModal('${v.tag}')" class="text-xs font-mono text-neutral-400 hover:text-white transition-colors flex items-center gap-1">
+              <i class="fa-solid fa-align-left text-[10px]"></i> See full description
+            </button>
+
+            <div class="flex items-center gap-2">
+              <button onclick="quickInstallVersion('${v.tag}')" class="px-3 py-1.5 bg-white hover:bg-neutral-200 text-black text-xs font-bold rounded transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt"></i> Quick Install
+              </button>
+              
+              <a href="${hexUrl}" download class="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border border-neutral-800 text-xs font-mono rounded transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-download"></i> Binary (.hex)
+              </a>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // --- Quick Install Action ---
+    function quickInstallVersion(tag) {
+      switchTab('installer');
+      const selectEl = document.getElementById('version-select');
+      selectEl.value = tag;
+      updateInstallerVersionMeta();
+      logInstaller(`Quick-selected release ${tag} from Versions catalog.`);
+    }
+
+    // --- Full Description Modal Logic ---
+    function openDescriptionModal(tag) {
+      const release = globalVersionsData.versions.find(v => v.tag === tag);
+      if (!release) return;
+
+      const isLatest = latestMatchedRelease && (release.tag === latestMatchedRelease.tag || release.name === latestMatchedRelease.name);
+      document.getElementById('modal-title').textContent = isLatest ? formatLatestTitle(release.name) : release.name;
+      document.getElementById('modal-subtitle').textContent = `Tag: ${release.tag} | Date: ${release.releaseDate || 'N/A'}`;
+      document.getElementById('modal-body').textContent = release.description || 'No detailed description available.';
+      
+      document.getElementById('desc-modal').classList.remove('hidden');
+    }
+
+    function closeDescriptionModal() {
+      document.getElementById('desc-modal').classList.add('hidden');
     }
 
     // --- Overview README Renderer ---
@@ -637,7 +834,6 @@
       if (isConnected) {
         logInstaller("WebUSB DAPLink connected: micro:bit v2 hardware detected.");
         logDebugger("[SYS] Connected to /dev/tty.usbmodem-mdd (115200 baud)");
-        startMockTelemetry();
       } else {
         logInstaller("WebUSB connection closed.");
         logDebugger("[SYS] WebUSB connection terminated.");
@@ -673,22 +869,17 @@
       }
     }
 
-    // --- Installer Logic ---
+    // --- Flashing Logic ---
     async function startFirmwareInstall() {
       const selectEl = document.getElementById('version-select');
-      const selectedTag = selectEl.value;
+      const selectedVal = selectEl.value;
 
-      if (!selectedTag) {
-        alert("Please select a firmware version.");
-        return;
-      }
+      const hexUrl = selectedVal === 'latest' 
+        ? 'https://jxoj.github.io/MDD/versions/latest.hex' 
+        : `https://jxoj.github.io/MDD/versions/${selectedVal}.hex`;
 
-      const hexUrl = selectedTag === 'latest' || selectedTag === 'v1.0.0'
-        ? 'https://jxoj.github.io/MDD/versions/latest.hex'
-        : `https://jxoj.github.io/MDD/versions/${selectedTag}.hex`;
-
-      logInstaller(`Preparing build release: ${selectedTag}...`);
-      logInstaller(`Fetching firmware binary from ${hexUrl}...`);
+      logInstaller(`Selected release build: ${selectedVal}`);
+      logInstaller(`Target binary URL: ${hexUrl}`);
 
       const bar = document.getElementById('install-progress-bar');
       const pct = document.getElementById('install-progress-percent');
@@ -716,7 +907,7 @@
           logInstaller("COMPLETE: MDD OS flashed successfully! Device rebooting.");
           lbl.textContent = "Flash Complete";
           if (isConnected) {
-            logDebugger("[SYS] Firmware re-flashed. MDD OS v2.0 Boot Sequence Initiated.");
+            logDebugger("[SYS] Firmware re-flashed. MDD OS Boot Sequence Initiated.");
           }
         }
       }, 250);
@@ -735,7 +926,7 @@
       document.getElementById('installer-terminal').innerHTML = '';
     }
 
-    // --- Debugger & Telemetry Logic ---
+    // --- Debugger Logic ---
     function logDebugger(msg) {
       const term = document.getElementById('debugger-terminal');
       const time = new Date().toLocaleTimeString();
@@ -766,31 +957,16 @@
         if (val.toUpperCase() === 'HELP') {
           logDebugger("MDD OS Commands: HELP, REBOOT, DISP_TEST, MEM, VER");
         } else if (val.toUpperCase() === 'VER') {
-          logDebugger(`MDD Version: ${globalVersionsData.latest || 'v1.0.0'}`);
+          logDebugger(`MDD Version: ${latestMatchedRelease ? latestMatchedRelease.name : 'v1.0.0'}`);
         } else if (val.toUpperCase() === 'REBOOT') {
-          logDebugger("Rebooting device hardware...");
+          logDebugger("Rebooting hardware...");
         } else {
-          logDebugger(`ACK: Executed command '${val}'`);
+          logDebugger(`ACK: Executed '${val}'`);
         }
       }, 150);
     }
 
-    function startMockTelemetry() {
-      if (mockSerialInterval) clearInterval(mockSerialInterval);
-      mockSerialInterval = setInterval(() => {
-        if (!isConnected) return;
-        const events = [
-          "DISPLAY_BUFF: Frame rendered (60 FPS)",
-          "GPIO_EVT: Pin P0 voltage STABLE",
-          "SYS_MON: CPU 12% | Heap 42KB free",
-          "SHIELD_SPI: Sync packet acknowledged"
-        ];
-        const randomEvt = events[Math.floor(Math.random() * events.length)];
-        logDebugger(`[DATA] ${randomEvt}`);
-      }, 3500);
-    }
-
-    // --- Window Onload ---
+    // --- Window Init ---
     window.onload = function() {
       fetchVersionsData();
       const initialTab = getTabFromUrl();
