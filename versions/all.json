@@ -1,12 +1,19 @@
 {
-  "latest": "v1.0.0",
+  "latest": "Dev-1",
   "versions": [
     {
-      "tag": "Dev",
-      "name": "v1.0.0",
-      "description": "Added multi-buffer display rendering, high-speed WebUSB serial logging, and improved shield driver stability.",
+      "tag": "Dev-1",
+      "name": "MDD 1.0.0 Bacon",
+      "description": "The first ever public MDD release. If your wondering why it's called Bacon see here",
       "releaseDate": "2026-20-10",
       "prerelease": true
+    },
+    {
+      "tag": "Test-1",
+      "name": "Versioning Testing",
+      "description": "Test versioning, ⚠(THIS IS NOT A RELEASE)",
+      "releaseDate": "2026-20-10",
+      "prerelease": false
     }
   ]
 }
