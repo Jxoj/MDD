@@ -1,18 +1,18 @@
 {
-  "latest": "Dev-1",
+  "latest": "1.0.0 Bacon",
   "versions": [
     {
-      "tag": "Dev-1",
-      "name": "MDD 1.0.0 Bacon",
+      "tag": "Dev",
+      "name": "1.0.0 Bacon",
       "description": "The first ever public MDD release. If your wondering why it's called Bacon see here",
       "releaseDate": "2026-20-10",
       "prerelease": true
     },
     {
-      "tag": "Test-1",
-      "name": "Versioning Testing",
+      "tag": "Test",
+      "name": "Tester",
       "description": "Test versioning, ⚠(THIS IS NOT A RELEASE)",
-      "releaseDate": "2026-20-10",
+      "releaseDate": "2026-20-11",
       "prerelease": false
     }
   ]

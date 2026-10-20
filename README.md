@@ -31,8 +31,8 @@ name our releases in this format:
 So a release could look like 1.0.0-Stable-Cake
 
 The food is changed every time a there is major release so for example:\
-1.0.0 is Bacon
-2.0.0 is Cookie
+1.0.0 is Bacon\
+2.0.0 is Cookie\
 But 1.2.3 would still be Bacon
 
 Where is the source code?\
