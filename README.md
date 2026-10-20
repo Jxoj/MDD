@@ -24,7 +24,7 @@ Will MDD support microbit v1 devices?\
 Probaly not there may a MDD-lite release that allows you to have some features of MDD on just the LED screen.
 
 Where can I download the `.hex` file?\
-[Here](https://jxoj.github.io/MDD?tab=installer)
+[Here](https://jxoj.github.io/MDD?tab=versions)
 
 How can I install MDD?\
-At [MDD Installer](https://jxoj.github.io/MDD?tab=install)
+At [MDD Installer](https://jxoj.github.io/MDD?tab=installer)
