@@ -1,0 +1,12 @@
+{
+  "latest": "v1.0.0",
+  "versions": [
+    {
+      "tag": "Dev",
+      "name": "v1.0.0",
+      "description": "Added multi-buffer display rendering, high-speed WebUSB serial logging, and improved shield driver stability.",
+      "releaseDate": "2026-20-10",
+      "prerelease": true
+    }
+  ]
+}
