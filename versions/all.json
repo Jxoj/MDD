@@ -1,15 +1,15 @@
 {
-  "latest": "1.0.0 Bacon",
+  "latest": "1.0.1 Bacon",
   "versions": [
     {
-      "tag": "Dev",
+      "tag": "Dev1",
       "name": "1.0.0 Bacon",
       "description": "The first ever public MDD release. If your wondering why it's called Bacon see here https://github.com/jxoj/MDD#why-is-my-release-named-after-a-food",
       "releaseDate": "Oct/20/2026",
       "prerelease": true
     },
     {
-      "tag": "Dev",
+      "tag": "Dev1.0.1",
       "name": "1.0.1 Bacon",
       "description": "Added a easter egg                                                    🤫Hint: Click something in settings",
       "releaseDate": "Oct/21/2026",
