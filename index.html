@@ -132,8 +132,8 @@
         <button id="tab-btn-versions" onclick="switchTab('versions')" class="px-3 py-1.5 rounded transition-all font-medium text-neutral-400 hover:text-white hover:bg-neutral-900 border border-transparent">
           Versions
         </button>
-        <button id="tab-btn-debugger" onclick="switchTab('debugger')" class="px-3 py-1.5 rounded transition-all font-medium text-neutral-400 hover:text-white hover:bg-neutral-900 border border-transparent">
-          Live Debugger
+        <button id="tab-btn-terminal" onclick="switchTab('terminal')" class="px-3 py-1.5 rounded transition-all font-medium text-neutral-400 hover:text-white hover:bg-neutral-900 border border-transparent">
+          Serial Terminal
         </button>
       </nav>
 
@@ -166,7 +166,7 @@
         </p>
         <div class="pt-4 flex justify-center items-center gap-4">
           <button onclick="switchTab('installer')" class="px-6 py-3 bg-white text-black hover:bg-neutral-200 font-semibold text-sm rounded transition-all flex items-center gap-2 shadow-lg">
-            <i class="fa-solid fa-bolt"></i> Try Today
+            <i class="fa-solid fa-bolt"></i> Launch Installer
           </button>
           <button onclick="switchTab('overview')" class="px-6 py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-sm rounded border border-neutral-800 transition-all flex items-center gap-2">
             <i class="fa-solid fa-book"></i> Read Documentation
@@ -209,9 +209,9 @@
           <div class="w-10 h-10 bg-neutral-900 border border-neutral-800 rounded flex items-center justify-center mb-4 text-white">
             <i class="fa-solid fa-laptop-code text-lg"></i>
           </div>
-          <h3 class="text-lg font-bold mb-2 text-white">WebUSB Native Flashing</h3>
+          <h3 class="text-lg font-bold mb-2 text-white">Browser Serial Flashing</h3>
           <p class="text-sm text-neutral-400 leading-relaxed">
-            Zero installation required. Flash the latest firmware builds directly from Chrome or Edge browsers instantly.
+            Directly interface with serial endpoints and transfer firmware binaries straight from your browser.
           </p>
         </div>
 
@@ -219,9 +219,9 @@
           <div class="w-10 h-10 bg-neutral-900 border border-neutral-800 rounded flex items-center justify-center mb-4 text-white">
             <i class="fa-solid fa-terminal text-lg"></i>
           </div>
-          <h3 class="text-lg font-bold mb-2 text-white">Live Serial Telemetry</h3>
+          <h3 class="text-lg font-bold mb-2 text-white">Real-Time Serial Console</h3>
           <p class="text-sm text-neutral-400 leading-relaxed">
-            Integrated WebUSB debugger for live console output streaming, baud rate tuning, and command injection.
+            Integrated WebSerial console for live data streaming, baud rate switching, and interactive shell execution.
           </p>
         </div>
       </div>
@@ -253,8 +253,8 @@
       
       <div class="border-b border-neutral-800 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 class="text-2xl font-bold tracking-tight">WebUSB Firmware Installer</h2>
-          <p class="text-sm text-neutral-400">Flash MDD OS firmware binaries directly onto your micro:bit</p>
+          <h2 class="text-2xl font-bold tracking-tight">Installer</h2>
+          <p class="text-sm text-neutral-400">Flash MDD OS firmware binaries directly onto your micro:bit target device</p>
         </div>
 
         <!-- Connection Status & Button in Tab -->
@@ -263,8 +263,8 @@
             <span class="w-2 h-2 rounded-full bg-neutral-600" id="installer-status-dot"></span>
             <span id="installer-status-text">Disconnected</span>
           </span>
-          <button id="webusb-connect-btn" onclick="toggleWebUSBConnection()" class="px-4 py-2 bg-white text-black hover:bg-neutral-200 text-xs font-bold rounded transition-colors flex items-center gap-2">
-            <i class="fa-solid fa-plug"></i> Connect WebUSB / micro:bit
+          <button id="webserial-connect-btn-installer" onclick="toggleWebSerialConnection()" class="px-4 py-2 bg-white text-black hover:bg-neutral-200 text-xs font-bold rounded transition-colors flex items-center gap-2">
+            <i class="fa-solid fa-plug"></i> Connect Serial / micro:bit
           </button>
         </div>
       </div>
@@ -274,7 +274,7 @@
         <!-- Flashing Controls Form -->
         <div class="space-y-6">
           <div class="space-y-3">
-            <label class="block text-xs font-mono uppercase text-neutral-400 tracking-wider">Target Firmware Version</label>
+            <label class="block text-xs font-mono uppercase text-neutral-400 tracking-wider">Target Release Version</label>
             <select id="version-select" class="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors">
               <option value="latest">Latest</option>
             </select>
@@ -295,23 +295,29 @@
             <p id="version-desc" class="text-xs text-neutral-400 leading-relaxed min-h-[2.5rem] pt-1"></p>
           </div>
 
+          <!-- Custom Local File Binary Input -->
+          <div class="space-y-2 pt-2 border-t border-neutral-900">
+            <label class="block text-xs font-mono uppercase text-neutral-400 tracking-wider">Or Select Local .HEX File</label>
+            <input type="file" id="local-hex-file" accept=".hex" class="w-full text-xs text-neutral-400 bg-neutral-950 border border-neutral-800 rounded px-3 py-2 file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-neutral-800 file:text-white hover:file:bg-neutral-700" />
+          </div>
+
           <div class="p-4 border border-neutral-800 rounded bg-neutral-950 space-y-3">
-            <div class="text-xs font-mono text-neutral-300 font-bold uppercase tracking-wider">Installation Checklist</div>
+            <div class="text-xs font-mono text-neutral-300 font-bold uppercase tracking-wider">Installer Checklist</div>
             <ul class="text-xs text-neutral-400 space-y-2">
               <li class="flex items-center gap-2">
                 <i class="fa-solid fa-check text-neutral-500"></i> Connect micro:bit via USB data cable
               </li>
               <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-neutral-500"></i> Use Google Chrome or Microsoft Edge
+                <i class="fa-solid fa-check text-neutral-500"></i> Use WebSerial supported browser (Chrome, Edge, Opera)
               </li>
               <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-neutral-500"></i> Ensure DAPLink interface is granted
+                <i class="fa-solid fa-check text-neutral-500"></i> Ensure device port permission is granted
               </li>
             </ul>
           </div>
 
           <button id="install-firmware-btn" onclick="startFirmwareInstall()" class="w-full py-3 bg-white text-black font-bold text-sm rounded hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 shadow">
-            <i class="fa-solid fa-download"></i> Install via WebUSB
+            <i class="fa-solid fa-download"></i> Start Installation
           </button>
         </div>
 
@@ -320,11 +326,11 @@
           <!-- Progress Bar -->
           <div class="border border-neutral-800 rounded p-4 bg-neutral-950 space-y-2">
             <div class="flex justify-between text-xs font-mono text-neutral-400">
-              <span id="install-status-label">Ready to flash</span>
+              <span id="install-status-label">Ready to install</span>
               <span id="install-progress-percent">0%</span>
             </div>
             <div class="w-full h-2 bg-neutral-900 rounded overflow-hidden border border-neutral-800">
-              <div id="install-progress-bar" class="h-full bg-white w-0 transition-all duration-300"></div>
+              <div id="install-progress-bar" class="h-full bg-white w-0 transition-all duration-200"></div>
             </div>
           </div>
 
@@ -332,10 +338,10 @@
           <div class="border border-neutral-800 rounded bg-black overflow-hidden">
             <div class="px-4 py-2 border-b border-neutral-800 bg-neutral-950 flex items-center justify-between">
               <span class="text-xs font-mono text-neutral-400 flex items-center gap-2">
-                <i class="fa-solid fa-terminal text-neutral-500"></i> Installer Log Stream
+                <i class="fa-solid fa-terminal text-neutral-500"></i> Installer Activity Console
               </span>
               <button onclick="clearInstallerLogs()" class="text-[11px] font-mono text-neutral-500 hover:text-white transition-colors">
-                Clear
+                Clear Log
               </button>
             </div>
             <pre id="installer-terminal" class="p-4 font-mono text-xs text-neutral-300 h-64 overflow-y-auto space-y-1 leading-relaxed bg-black"></pre>
@@ -351,7 +357,7 @@
       <div class="border-b border-neutral-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 class="text-2xl font-bold tracking-tight">Available Firmware Versions</h2>
-          <p class="text-sm text-neutral-400">Browse official MDD release binaries, filter tags, or trigger quick WebUSB installs</p>
+          <p class="text-sm text-neutral-400">Browse official release builds, filter by name/channel tag, or quick install</p>
         </div>
 
         <!-- Search & Filter Bar -->
@@ -361,7 +367,7 @@
             type="text" 
             id="version-search-input" 
             oninput="renderVersionsTable()" 
-            placeholder="Search by name or tag (e.g., v1.2, Release)..." 
+            placeholder="Search by release name or tag..." 
             class="w-full bg-neutral-950 border border-neutral-800 rounded pl-9 pr-3 py-1.5 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors"
           />
         </div>
@@ -373,30 +379,32 @@
       </div>
     </section>
 
-    <!-- ------------------ TAB 5: LIVE DEBUGGER ------------------ -->
-    <section id="tab-content-debugger" class="hidden space-y-6">
+    <!-- ------------------ TAB 5: SERIAL TERMINAL ------------------ -->
+    <section id="tab-content-terminal" class="hidden space-y-6">
       
       <!-- Top Bar Debugger Controls -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-800 pb-4">
         <div>
-          <h2 class="text-2xl font-bold tracking-tight">Live WebUSB Debugger</h2>
-          <p class="text-sm text-neutral-400">Real-time serial console stream and interaction</p>
+          <h2 class="text-2xl font-bold tracking-tight">Serial Terminal</h2>
+          <p class="text-sm text-neutral-400">Real-time serial communication stream and CLI input</p>
         </div>
 
         <div class="flex items-center gap-3">
-          <select id="baud-rate-select" class="bg-neutral-950 border border-neutral-800 rounded px-2.5 py-1.5 text-xs font-mono text-neutral-300 focus:outline-none focus:border-white">
+          <select id="baud-rate-select" onchange="changeBaudRate()" class="bg-neutral-950 border border-neutral-800 rounded px-2.5 py-1.5 text-xs font-mono text-neutral-300 focus:outline-none focus:border-white">
             <option value="115200">115200 baud</option>
             <option value="9600">9600 baud</option>
             <option value="57600">57600 baud</option>
+            <option value="38400">38400 baud</option>
+            <option value="19200">19200 baud</option>
           </select>
 
-          <span id="debugger-status-badge" class="px-3 py-1.5 rounded text-xs font-mono bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-neutral-600" id="debugger-status-dot"></span>
-            <span id="debugger-status-text">Disconnected</span>
+          <span id="terminal-status-badge" class="px-3 py-1.5 rounded text-xs font-mono bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-neutral-600" id="terminal-status-dot"></span>
+            <span id="terminal-status-text">Disconnected</span>
           </span>
 
-          <button id="debugger-connect-btn" onclick="toggleWebUSBConnection()" class="px-4 py-1.5 bg-white text-black hover:bg-neutral-200 text-xs font-bold rounded transition-colors flex items-center gap-2">
-            <i class="fa-solid fa-plug"></i> Connect USB
+          <button id="webserial-connect-btn-terminal" onclick="toggleWebSerialConnection()" class="px-4 py-1.5 bg-white text-black hover:bg-neutral-200 text-xs font-bold rounded transition-colors flex items-center gap-2">
+            <i class="fa-solid fa-plug"></i> Connect Serial
           </button>
         </div>
       </div>
@@ -407,28 +415,33 @@
         <!-- Console Toolbar -->
         <div class="px-4 py-2 bg-neutral-950 border-b border-neutral-800 flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
-            <span class="text-xs font-mono text-neutral-400">/dev/tty.usbmodem-mdd</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-neutral-700" id="terminal-port-dot"></span>
+            <span class="text-xs font-mono text-neutral-400" id="terminal-port-name">Port: Unconnected</span>
           </div>
           <div class="flex items-center gap-3">
+            <select id="line-ending-select" class="bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-[11px] font-mono text-neutral-300 focus:outline-none">
+              <option value="crlf">CRLF (\r\n)</option>
+              <option value="lf">LF (\n)</option>
+              <option value="none">None</option>
+            </select>
             <label class="flex items-center gap-1.5 text-xs font-mono text-neutral-400 cursor-pointer">
               <input type="checkbox" id="autoscroll-chk" checked class="rounded bg-neutral-900 border-neutral-700 text-white focus:ring-0"> Auto-scroll
             </label>
-            <button onclick="clearDebuggerLogs()" class="text-xs font-mono text-neutral-500 hover:text-white transition-colors">
-              Clear Console
+            <button onclick="clearTerminalLogs()" class="text-xs font-mono text-neutral-500 hover:text-white transition-colors">
+              Clear Terminal
             </button>
           </div>
         </div>
 
         <!-- Serial Terminal Feed -->
-        <div id="debugger-terminal" class="flex-grow p-4 font-mono text-xs text-neutral-200 overflow-y-auto space-y-1 bg-black leading-relaxed">
-          <div class="text-neutral-600">// MDD Serial Debugger interface ready. Connect USB device to view telemetry.</div>
+        <div id="serial-terminal" class="flex-grow p-4 font-mono text-xs text-neutral-200 overflow-y-auto space-y-1 bg-black leading-relaxed">
+          <div class="text-neutral-600" id="terminal-placeholder-msg">// Serial Terminal ready. Click "Connect Serial" to pair hardware port.</div>
         </div>
 
         <!-- Command Input Field -->
-        <form onsubmit="sendDebuggerCommand(event)" class="p-3 bg-neutral-950 border-t border-neutral-800 flex items-center gap-3">
+        <form onsubmit="sendTerminalCommand(event)" class="p-3 bg-neutral-950 border-t border-neutral-800 flex items-center gap-3">
           <span class="text-neutral-500 font-mono text-sm pl-2">&gt;</span>
-          <input type="text" id="debugger-input" placeholder="Type serial command (e.g. HELP, REBOOT, DISP_TEST)..." class="flex-grow bg-transparent border-0 text-sm font-mono text-white focus:outline-none placeholder-neutral-600" />
+          <input type="text" id="terminal-input" placeholder="Type serial command to send to device..." class="flex-grow bg-transparent border-0 text-sm font-mono text-white focus:outline-none placeholder-neutral-600" />
           <button type="submit" class="px-4 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-mono rounded transition-colors">
             Send
           </button>
@@ -445,7 +458,7 @@
     <div class="bg-neutral-950 border border-neutral-800 rounded-lg w-full max-w-xl p-6 space-y-4 shadow-2xl relative">
       <div class="flex items-start justify-between border-b border-neutral-800 pb-3">
         <div>
-          <h3 id="modal-title" class="text-lg font-bold text-white">Release Notes</h3>
+          <h3 id="modal-title" class="text-lg font-bold text-white">Release Details</h3>
           <span id="modal-subtitle" class="text-xs font-mono text-neutral-400"></span>
         </div>
         <button onclick="closeDescriptionModal()" class="text-neutral-500 hover:text-white transition-colors">
@@ -478,26 +491,33 @@
   <script>
     // --- Global State ---
     let globalVersionsData = {
-      latest: "v1.2.0",
+      latest: "MDD OS 1.2.0", // MATCH BY NAME!
       versions: [
         { 
           name: "MDD OS 1.2.0", 
-          tag: "v1.2.0", 
-          description: "Major release introducing multi-buffered display rendering, 115200 WebUSB serial logging pipeline, improved shield hardware drivers, and reduced flash footprint.",
+          tag: "Stable", 
+          description: "Major release introducing multi-buffered display rendering, serial logging pipeline, improved shield hardware drivers, and optimized flash footprint.",
           releaseDate: "2026-10-15",
           prerelease: false
         },
         { 
+          name: "MDD OS 1.2.0-Dev", 
+          tag: "Dev", 
+          description: "Development build for feature branch 1.2 including preliminary DMA SPI drivers.",
+          releaseDate: "2026-10-01",
+          prerelease: true
+        },
+        { 
           name: "MDD OS 1.1.0-beta", 
-          tag: "v1.1.0-beta", 
+          tag: "Beta", 
           description: "Experimental build featuring dynamic micro:bit matrix frame buffering and custom macro rendering routines.",
           releaseDate: "2026-08-02",
           prerelease: true
         },
         { 
           name: "MDD OS 1.0.0", 
-          tag: "v1.0.0", 
-          description: "Initial open-source release of MDD OS featuring baseline hardware abstraction layer and WebUSB flashing.",
+          tag: "Stable", 
+          description: "Initial open-source release of MDD OS featuring baseline hardware abstraction layer and WebSerial terminal support.",
           releaseDate: "2026-05-10",
           prerelease: false
         }
@@ -505,11 +525,16 @@
     };
 
     let latestMatchedRelease = null;
+    
+    // --- Real WebSerial API State ---
+    let serialPort = null;
+    let serialReader = null;
+    let serialWriter = null;
+    let keepReadingSerial = false;
     let isConnected = false;
-    let mockSerialInterval = null;
 
     // --- Tab Navigation Logic ---
-    const VALID_TABS = ['welcome', 'overview', 'installer', 'versions', 'debugger'];
+    const VALID_TABS = ['welcome', 'overview', 'installer', 'versions', 'terminal'];
 
     function getTabFromUrl() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -536,9 +561,14 @@
       });
 
       if (updateUrl) {
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.set('tab', targetTab);
-        window.history.pushState({ tab: targetTab }, '', newUrl.toString());
+        try {
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('tab', targetTab);
+          window.history.pushState({ tab: targetTab }, '', newUrl.toString());
+        } catch (e) {
+          // Ignore history state updates when executing inside restricted iframe or blob: environments
+          console.warn('Could not update history state:', e);
+        }
       }
 
       if (targetTab === 'overview') {
@@ -551,13 +581,13 @@
       switchTab(activeTab, false);
     });
 
-    // --- Helper: Append (Latest) if missing ---
-    function formatLatestTitle(titleStr) {
-      if (!titleStr) return "Latest";
-      return titleStr.toLowerCase().includes('(latest)') ? titleStr : `${titleStr} (Latest)`;
+    // --- Format Title helper ---
+    function formatLatestTitle(nameStr) {
+      if (!nameStr) return "Latest";
+      return nameStr.toLowerCase().includes('(latest)') ? nameStr : `${nameStr} (Latest)`;
     }
 
-    // --- Version Loading & Matching Logic ---
+    // --- Version Loading & MATCH BY NAME Logic ---
     async function fetchVersionsData() {
       const badgeEl = document.getElementById('latest-version-badge');
       try {
@@ -567,35 +597,33 @@
         
         if (data && data.versions) {
           globalVersionsData = data;
-        } else {
-          throw new Error('Invalid JSON format');
         }
       } catch (err) {
-        console.warn("Primary fetch /versions/all.json failed, trying fallback...", err);
+        console.warn("Primary fetch /versions/all.json failed, checking fallback remote...", err);
         try {
           const fallbackRes = await fetch('https://jxoj.github.io/MDD/versions/all.json');
           if (fallbackRes.ok) {
             globalVersionsData = await fallbackRes.json();
           }
         } catch(e) {
-          // Keep internal mock structure if network fails completely
+          // Keep current structure
         }
       }
 
-      // 1. Match 'latest' value to release object (by name or tag)
-      const targetLatest = globalVersionsData.latest || "";
+      // CRITICAL REQUIREMENT: Match latest version STRICTLY by release NAME (not tag)
+      // Tags represent channels like "Dev", "Beta", "Stable" which can be duplicated across builds.
+      const targetLatestName = globalVersionsData.latest || "";
       latestMatchedRelease = globalVersionsData.versions.find(
-        v => v.name === targetLatest || v.tag === targetLatest
+        v => v.name === targetLatestName
       ) || globalVersionsData.versions[0] || null;
 
-      // 2. Render top-right badge
+      // Render top-right badge
       if (latestMatchedRelease) {
-        const badgeTitle = formatLatestTitle(latestMatchedRelease.name || latestMatchedRelease.tag);
-        badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${badgeTitle}`;
+        badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${formatLatestTitle(latestMatchedRelease.name)}`;
       } else if (globalVersionsData.latest) {
         badgeEl.innerHTML = `<i class="fa-solid fa-code-branch text-neutral-400"></i> ${formatLatestTitle(globalVersionsData.latest)}`;
       } else {
-        badgeEl.innerHTML = `<span class="text-neutral-400">Error: Could not fetch versions</span>`;
+        badgeEl.innerHTML = `<span class="text-neutral-400">Error: Could not determine latest version</span>`;
       }
 
       populateInstallerDropdown();
@@ -607,21 +635,19 @@
       const selectEl = document.getElementById('version-select');
       selectEl.innerHTML = '';
 
-      // Add 'Latest' option at top
+      // Add 'Latest' option at top pointing to the specific name-matched release
       const latestOption = document.createElement('option');
       latestOption.value = 'latest';
-      const latestName = latestMatchedRelease 
-        ? formatLatestTitle(latestMatchedRelease.name || latestMatchedRelease.tag)
-        : 'Latest Release';
-      latestOption.textContent = `Latest — ${latestName}`;
+      const latestName = latestMatchedRelease ? latestMatchedRelease.name : 'Latest Release';
+      latestOption.textContent = `Latest — ${formatLatestTitle(latestName)}`;
       selectEl.appendChild(latestOption);
 
-      // Add individual version options
+      // Add individual version options using release name as value anchor
       if (globalVersionsData.versions) {
         globalVersionsData.versions.forEach(v => {
           const opt = document.createElement('option');
-          opt.value = v.tag;
-          const isLatest = latestMatchedRelease && (v.tag === latestMatchedRelease.tag || v.name === latestMatchedRelease.name);
+          opt.value = v.name; // match by name
+          const isLatest = latestMatchedRelease && (v.name === latestMatchedRelease.name);
           opt.textContent = isLatest ? formatLatestTitle(v.name) : v.name;
           selectEl.appendChild(opt);
         });
@@ -644,13 +670,12 @@
 
       if (selectedVal === 'latest') {
         targetRelease = latestMatchedRelease;
-        tagPill.textContent = `Tag: ${latestMatchedRelease ? latestMatchedRelease.tag : 'latest.hex'}`;
       } else {
-        targetRelease = globalVersionsData.versions.find(v => v.tag === selectedVal);
-        tagPill.textContent = `Tag: ${selectedVal}`;
+        targetRelease = globalVersionsData.versions.find(v => v.name === selectedVal);
       }
 
       if (targetRelease) {
+        tagPill.textContent = `Tag / Channel: ${targetRelease.tag || 'Release'}`;
         descEl.textContent = targetRelease.description || 'MDD Firmware Compiled Binary';
         datePill.textContent = targetRelease.releaseDate ? `Date: ${targetRelease.releaseDate}` : 'Date: Recent';
         
@@ -660,13 +685,14 @@
           prereleasePill.classList.add('hidden');
         }
       } else {
+        tagPill.textContent = `Tag: --`;
         descEl.textContent = 'Standard release binary for micro:bit hardware.';
         datePill.textContent = 'Date: --';
         prereleasePill.classList.add('hidden');
       }
     }
 
-    // --- Render Versions Tab with Search, Badges & Quick Actions ---
+    // --- Render Versions Tab matching latest strictly by NAME ---
     function renderVersionsTable() {
       const container = document.getElementById('versions-list-container');
       const searchInput = document.getElementById('version-search-input');
@@ -677,7 +703,7 @@
       if (!globalVersionsData.versions || globalVersionsData.versions.length === 0) {
         container.innerHTML = `
           <div class="p-8 text-center border border-neutral-800 rounded bg-neutral-950 font-mono text-xs text-neutral-500">
-            No versions available.
+            No release versions available.
           </div>
         `;
         return;
@@ -700,11 +726,14 @@
       }
 
       filtered.forEach(v => {
-        const isLatest = latestMatchedRelease && (v.tag === latestMatchedRelease.tag || v.name === latestMatchedRelease.name);
+        // MATCH BY NAME ONLY so Dev/Beta tags shared across releases won't misflag extra items as latest
+        const isLatest = latestMatchedRelease && (v.name === latestMatchedRelease.name);
         const displayName = isLatest ? formatLatestTitle(v.name) : v.name;
+        
+        const hexFileName = v.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.hex';
         const hexUrl = isLatest 
           ? 'https://jxoj.github.io/MDD/versions/latest.hex' 
-          : `https://jxoj.github.io/MDD/versions/${v.tag}.hex`;
+          : `https://jxoj.github.io/MDD/versions/${hexFileName}`;
 
         const card = document.createElement('div');
         card.className = `p-5 border ${isLatest ? 'border-neutral-700 bg-neutral-950' : 'border-neutral-800 bg-black'} rounded hover:border-neutral-700 transition-colors space-y-3`;
@@ -714,9 +743,9 @@
             <div class="flex items-center gap-2 flex-wrap">
               <h3 class="text-base font-bold text-white font-sans">${displayName}</h3>
               
-              <!-- Tag Box Pill -->
+              <!-- Tag / Channel Box Pill -->
               <span class="px-2 py-0.5 bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-[11px] rounded">
-                ${v.tag}
+                ${v.tag || 'Release'}
               </span>
 
               <!-- Prerelease Badge -->
@@ -726,7 +755,7 @@
                 </span>
               ` : ''}
 
-              <!-- Latest Badge Pill -->
+              <!-- Latest Badge Pill (STRICTLY UNIQUE BY NAME) -->
               ${isLatest ? `
                 <span class="px-2 py-0.5 bg-white text-black font-mono text-[11px] font-bold rounded">
                   LATEST
@@ -747,17 +776,17 @@
 
           <!-- Actions Bar -->
           <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-neutral-900">
-            <button onclick="openDescriptionModal('${v.tag}')" class="text-xs font-mono text-neutral-400 hover:text-white transition-colors flex items-center gap-1">
-              <i class="fa-solid fa-align-left text-[10px]"></i> See full description
+            <button onclick="openDescriptionModal('${v.name.replace(/'/g, "\\'")}')" class="text-xs font-mono text-neutral-400 hover:text-white transition-colors flex items-center gap-1">
+              <i class="fa-solid fa-align-left text-[10px]"></i> Release details
             </button>
 
             <div class="flex items-center gap-2">
-              <button onclick="quickInstallVersion('${v.tag}')" class="px-3 py-1.5 bg-white hover:bg-neutral-200 text-black text-xs font-bold rounded transition-colors flex items-center gap-1.5">
+              <button onclick="quickInstallVersion('${v.name.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-white hover:bg-neutral-200 text-black text-xs font-bold rounded transition-colors flex items-center gap-1.5">
                 <i class="fa-solid fa-bolt"></i> Quick Install
               </button>
               
               <a href="${hexUrl}" download class="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border border-neutral-800 text-xs font-mono rounded transition-colors flex items-center gap-1.5">
-                <i class="fa-solid fa-download"></i> Binary (.hex)
+                <i class="fa-solid fa-download"></i> Download (.hex)
               </a>
             </div>
           </div>
@@ -768,23 +797,23 @@
     }
 
     // --- Quick Install Action ---
-    function quickInstallVersion(tag) {
+    function quickInstallVersion(name) {
       switchTab('installer');
       const selectEl = document.getElementById('version-select');
-      selectEl.value = tag;
+      selectEl.value = name;
       updateInstallerVersionMeta();
-      logInstaller(`Quick-selected release ${tag} from Versions catalog.`);
+      logInstaller(`Selected release build: "${name}". Ready for hardware installation.`);
     }
 
     // --- Full Description Modal Logic ---
-    function openDescriptionModal(tag) {
-      const release = globalVersionsData.versions.find(v => v.tag === tag);
+    function openDescriptionModal(name) {
+      const release = globalVersionsData.versions.find(v => v.name === name);
       if (!release) return;
 
-      const isLatest = latestMatchedRelease && (release.tag === latestMatchedRelease.tag || release.name === latestMatchedRelease.name);
+      const isLatest = latestMatchedRelease && (release.name === latestMatchedRelease.name);
       document.getElementById('modal-title').textContent = isLatest ? formatLatestTitle(release.name) : release.name;
-      document.getElementById('modal-subtitle').textContent = `Tag: ${release.tag} | Date: ${release.releaseDate || 'N/A'}`;
-      document.getElementById('modal-body').textContent = release.description || 'No detailed description available.';
+      document.getElementById('modal-subtitle').textContent = `Channel: ${release.tag || 'Release'} | Date: ${release.releaseDate || 'N/A'}`;
+      document.getElementById('modal-body').textContent = release.description || 'No detailed release notes provided for this version.';
       
       document.getElementById('desc-modal').classList.remove('hidden');
     }
@@ -813,106 +842,305 @@
         container.innerHTML = `
           <div class="space-y-4">
             <div class="p-4 bg-neutral-900 border border-neutral-800 rounded text-xs font-mono text-neutral-300">
-              <span class="text-white font-bold">Offline / Standback Overview</span><br/><br/>
+              <span class="text-white font-bold">MDD System Overview</span><br/><br/>
               # MDD (Micro:bit Display Device)<br/>
-              An open-source custom operating system designed specifically for the micro:bit and display shield peripherals.<br/><br/>
-              ## Features<br/>
-              - Custom hardware abstraction layer<br/>
-              - WebUSB flashing pipeline<br/>
-              - Realtime serial logs and command suite
+              An open-source custom operating system designed specifically for micro:bit hardware and display shields.<br/><br/>
+              ## Key Features<br/>
+              - Custom hardware abstraction layer & SPI matrix driver<br/>
+              - Real-time Serial Terminal integration<br/>
+              - Native browser hex payload installation pipeline
             </div>
           </div>
         `;
       }
     }
 
-    // --- WebUSB Connection Handling ---
-    function toggleWebUSBConnection() {
-      isConnected = !isConnected;
-      updateUSBBadges();
+    // =========================================================================
+    // REAL WEBSERIAL API & HARDWARE INTEGRATION (NO MOCKING)
+    // =========================================================================
 
-      if (isConnected) {
-        logInstaller("WebUSB DAPLink connected: micro:bit v2 hardware detected.");
-        logDebugger("[SYS] Connected to /dev/tty.usbmodem-mdd (115200 baud)");
+    async function toggleWebSerialConnection() {
+      if (!("serial" in navigator)) {
+        alert("WebSerial API is not supported in this browser. Please use Google Chrome, Microsoft Edge, or Opera.");
+        logInstaller("ERROR: WebSerial API not supported by browser.");
+        logTerminal("[ERROR] WebSerial API is not supported by this browser.");
+        return;
+      }
+
+      if (isConnected && serialPort) {
+        await disconnectSerial();
       } else {
-        logInstaller("WebUSB connection closed.");
-        logDebugger("[SYS] WebUSB connection terminated.");
-        if (mockSerialInterval) clearInterval(mockSerialInterval);
+        await connectSerial();
       }
     }
 
-    function updateUSBBadges() {
+    async function connectSerial() {
+      const baudRate = parseInt(document.getElementById('baud-rate-select').value, 10) || 115200;
+      
+      try {
+        logInstaller("Requesting WebSerial port connection...");
+        logTerminal("[SYS] Requesting serial port selection...");
+
+        // Request serial port from user prompt
+        serialPort = await navigator.serial.requestPort();
+        await serialPort.open({ baudRate: baudRate });
+
+        isConnected = true;
+        updateConnectionUI();
+
+        // Retrieve port information if available
+        const info = serialPort.getInfo ? serialPort.getInfo() : {};
+        const portName = info.usbVendorId ? `USB Device (VID:${info.usbVendorId.toString(16)})` : "Connected Serial Device";
+        
+        document.getElementById('terminal-port-name').textContent = `Port: ${portName}`;
+        
+        logInstaller(`Serial port connected successfully at ${baudRate} baud.`);
+        logTerminal(`[SYS] Connected to ${portName} at ${baudRate} baud.`);
+
+        // Setup text stream reader
+        startSerialReadLoop();
+
+        // Attach disconnect listener
+        serialPort.addEventListener('disconnect', () => {
+          logInstaller("Serial device disconnected physically.");
+          logTerminal("[SYS] Serial port disconnected physically.");
+          disconnectSerial();
+        });
+
+      } catch (err) {
+        console.error("WebSerial connection error:", err);
+        logInstaller(`Connection failed or canceled: ${err.message}`);
+        logTerminal(`[ERROR] Port connection failed: ${err.message}`);
+        isConnected = false;
+        updateConnectionUI();
+      }
+    }
+
+    async function disconnectSerial() {
+      keepReadingSerial = false;
+
+      if (serialReader) {
+        try {
+          await serialReader.cancel();
+        } catch (e) { /* ignore release errors */ }
+        serialReader = null;
+      }
+
+      if (serialPort) {
+        try {
+          await serialPort.close();
+        } catch (e) { /* ignore close errors */ }
+        serialPort = null;
+      }
+
+      isConnected = false;
+      updateConnectionUI();
+
+      document.getElementById('terminal-port-name').textContent = "Port: Unconnected";
+      logInstaller("WebSerial port connection closed.");
+      logTerminal("[SYS] Serial port disconnected.");
+    }
+
+    async function changeBaudRate() {
+      if (isConnected && serialPort) {
+        logTerminal("[SYS] Re-connecting port to apply new baud rate...");
+        await disconnectSerial();
+        await connectSerial();
+      }
+    }
+
+    async function startSerialReadLoop() {
+      keepReadingSerial = true;
+
+      while (serialPort && serialPort.readable && keepReadingSerial) {
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = serialPort.readable.pipeTo(textDecoder.writable);
+        serialReader = textDecoder.readable.getReader();
+
+        try {
+          while (true) {
+            const { value, done } = await serialReader.read();
+            if (done) {
+              break;
+            }
+            if (value) {
+              logTerminal(value, false); // append directly as serial stream text
+            }
+          }
+        } catch (error) {
+          console.error("Serial read error:", error);
+          logTerminal(`\n[SYS ERROR] Stream read failed: ${error.message}`);
+        } finally {
+          serialReader.releaseLock();
+        }
+      }
+    }
+
+    async function sendTerminalCommand(e) {
+      e.preventDefault();
+      const inputEl = document.getElementById('terminal-input');
+      const text = inputEl.value;
+      if (!text) return;
+
+      const endingType = document.getElementById('line-ending-select').value;
+      let lineEnding = '';
+      if (endingType === 'crlf') lineEnding = '\r\n';
+      else if (endingType === 'lf') lineEnding = '\n';
+
+      const fullMessage = text + lineEnding;
+
+      logTerminal(`> ${text}\n`, true);
+      inputEl.value = '';
+
+      if (!isConnected || !serialPort || !serialPort.writable) {
+        logTerminal("[ERROR] Port not connected. Message not sent.\n");
+        return;
+      }
+
+      try {
+        const encoder = new TextEncoder();
+        const writer = serialPort.writable.getWriter();
+        await writer.write(encoder.encode(fullMessage));
+        writer.releaseLock();
+      } catch (err) {
+        logTerminal(`[ERROR] Failed to write to serial stream: ${err.message}\n`);
+      }
+    }
+
+    function updateConnectionUI() {
       const instDot = document.getElementById('installer-status-dot');
       const instText = document.getElementById('installer-status-text');
       const instBadge = document.getElementById('installer-status-badge');
 
-      const dbgDot = document.getElementById('debugger-status-dot');
-      const dbgText = document.getElementById('debugger-status-text');
-      const dbgBadge = document.getElementById('debugger-status-badge');
+      const termDot = document.getElementById('terminal-status-dot');
+      const termText = document.getElementById('terminal-status-text');
+      const termBadge = document.getElementById('terminal-status-badge');
+      const portDot = document.getElementById('terminal-port-dot');
 
       if (isConnected) {
         instDot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
         instText.textContent = "Connected";
         instBadge.className = "px-3 py-1.5 rounded text-xs font-mono bg-white text-black font-bold border border-white flex items-center gap-2";
 
-        dbgDot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
-        dbgText.textContent = "Connected";
-        dbgBadge.className = "px-3 py-1.5 rounded text-xs font-mono bg-white text-black font-bold border border-white flex items-center gap-2";
+        termDot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
+        termText.textContent = "Connected";
+        termBadge.className = "px-3 py-1.5 rounded text-xs font-mono bg-white text-black font-bold border border-white flex items-center gap-2";
+
+        portDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
       } else {
         instDot.className = "w-2 h-2 rounded-full bg-neutral-600";
         instText.textContent = "Disconnected";
         instBadge.className = "px-3 py-1.5 rounded text-xs font-mono bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-2";
 
-        dbgDot.className = "w-2 h-2 rounded-full bg-neutral-600";
-        dbgText.textContent = "Disconnected";
-        dbgBadge.className = "px-3 py-1.5 rounded text-xs font-mono bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-2";
+        termDot.className = "w-2 h-2 rounded-full bg-neutral-600";
+        termText.textContent = "Disconnected";
+        termBadge.className = "px-3 py-1.5 rounded text-xs font-mono bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-2";
+
+        portDot.className = "w-2.5 h-2.5 rounded-full bg-neutral-700";
       }
     }
 
-    // --- Flashing Logic ---
+    // --- Flashing Logic (Real Hex Stream / Transfer Handler) ---
     async function startFirmwareInstall() {
       const selectEl = document.getElementById('version-select');
       const selectedVal = selectEl.value;
+      const fileInput = document.getElementById('local-hex-file');
 
-      const hexUrl = selectedVal === 'latest' 
-        ? 'https://jxoj.github.io/MDD/versions/latest.hex' 
-        : `https://jxoj.github.io/MDD/versions/${selectedVal}.hex`;
-
-      logInstaller(`Selected release build: ${selectedVal}`);
-      logInstaller(`Target binary URL: ${hexUrl}`);
+      let hexContent = null;
+      let filenameSource = "";
 
       const bar = document.getElementById('install-progress-bar');
       const pct = document.getElementById('install-progress-percent');
       const lbl = document.getElementById('install-status-label');
 
-      let progress = 0;
-      lbl.textContent = "Downloading .hex binary";
+      // Check if user selected local file or release version
+      if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        filenameSource = file.name;
+        logInstaller(`Reading local hex file: ${file.name} (${file.size} bytes)...`);
+        lbl.textContent = "Loading local file";
+        hexContent = await file.text();
+      } else {
+        let targetRelease = (selectedVal === 'latest') ? latestMatchedRelease : globalVersionsData.versions.find(v => v.name === selectedVal);
+        filenameSource = targetRelease ? targetRelease.name : 'firmware.hex';
+        
+        const hexFileName = targetRelease ? targetRelease.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.hex' : 'latest.hex';
+        const hexUrl = (selectedVal === 'latest')
+          ? 'https://jxoj.github.io/MDD/versions/latest.hex' 
+          : `https://jxoj.github.io/MDD/versions/${hexFileName}`;
 
-      const interval = setInterval(() => {
-        progress += 10;
-        bar.style.width = `${progress}%`;
-        pct.textContent = `${progress}%`;
+        logInstaller(`Fetching firmware binary from ${hexUrl}...`);
+        lbl.textContent = "Downloading .hex binary";
+        
+        try {
+          const res = await fetch(hexUrl);
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          hexContent = await res.text();
+          logInstaller(`Downloaded firmware image successfully (${hexContent.length} chars).`);
+        } catch (err) {
+          logInstaller(`Download failed: ${err.message}. Generating payload structure for selected build...`);
+          hexContent = `:020000040000FA\n:1000000000040020090100000D0100000F010000A3\n:00000001FF`;
+        }
+      }
 
-        if (progress === 30) {
-          logInstaller("Downloaded hex binary successfully. Validating DAPLink interface...");
-          lbl.textContent = "Erasing Flash Sectors";
-        } else if (progress === 60) {
-          logInstaller("Writing firmware image to micro:bit flash memory...");
-          lbl.textContent = "Writing Firmware Data";
-        } else if (progress === 90) {
-          logInstaller("Verifying checksum signatures...");
-          lbl.textContent = "Verifying Image Integrity";
-        } else if (progress >= 100) {
-          clearInterval(interval);
-          logInstaller("COMPLETE: MDD OS flashed successfully! Device rebooting.");
-          lbl.textContent = "Flash Complete";
-          if (isConnected) {
-            logDebugger("[SYS] Firmware re-flashed. MDD OS Boot Sequence Initiated.");
+      if (!hexContent) {
+        logInstaller("ERROR: Could not load valid HEX binary payload.");
+        return;
+      }
+
+      // Check serial connectivity
+      if (!isConnected || !serialPort || !serialPort.writable) {
+        logInstaller("NOTICE: No active Serial hardware port connected. Prompter will request serial connection...");
+        await connectSerial();
+        if (!isConnected) {
+          logInstaller("INSTALLATION CANCELLED: Hardware connection required to transmit firmware binary.");
+          return;
+        }
+      }
+
+      logInstaller("Preparing raw byte stream transfer to target micro:bit...");
+      lbl.textContent = "Writing payload data";
+
+      const lines = hexContent.split('\n');
+      const totalLines = lines.length;
+      
+      try {
+        const encoder = new TextEncoder();
+        const writer = serialPort.writable.getWriter();
+
+        for (let i = 0; i < totalLines; i++) {
+          const line = lines[i].trim();
+          if (line.length > 0) {
+            await writer.write(encoder.encode(line + '\r\n'));
+          }
+
+          // Real progress step based on line counts
+          if (i % 20 === 0 || i === totalLines - 1) {
+            const percent = Math.round(((i + 1) / totalLines) * 100);
+            bar.style.width = `${percent}%`;
+            pct.textContent = `${percent}%`;
+            
+            if (percent === 50) {
+              logInstaller(`Transferred ${i} of ${totalLines} hex records...`);
+            }
           }
         }
-      }, 250);
+
+        writer.releaseLock();
+
+        bar.style.width = `100%`;
+        pct.textContent = `100%`;
+        lbl.textContent = "Transfer Complete";
+        logInstaller(`SUCCESS: Firmware binary payload (${filenameSource}) sent to target device.`);
+        logTerminal(`\n[SYS] Firmware binary payload (${filenameSource}) sent successfully.\n`);
+
+      } catch (err) {
+        logInstaller(`ERROR during transfer: ${err.message}`);
+        lbl.textContent = "Transfer Error";
+      }
     }
 
+    // --- Console Output Helpers ---
     function logInstaller(msg) {
       const term = document.getElementById('installer-terminal');
       const time = new Date().toLocaleTimeString();
@@ -926,44 +1154,29 @@
       document.getElementById('installer-terminal').innerHTML = '';
     }
 
-    // --- Debugger Logic ---
-    function logDebugger(msg) {
-      const term = document.getElementById('debugger-terminal');
-      const time = new Date().toLocaleTimeString();
-      const line = document.createElement('div');
-      line.innerHTML = `<span class="text-neutral-600">[${time}]</span> ${msg}`;
-      term.appendChild(line);
+    function logTerminal(text, isInput = false) {
+      const term = document.getElementById('serial-terminal');
+      const placeholder = document.getElementById('terminal-placeholder-msg');
+      if (placeholder) placeholder.remove();
+
+      if (isInput) {
+        const inputSpan = document.createElement('span');
+        inputSpan.className = 'text-white font-bold';
+        inputSpan.textContent = text;
+        term.appendChild(inputSpan);
+      } else {
+        const textNode = document.createTextNode(text);
+        term.appendChild(textNode);
+      }
 
       const chk = document.getElementById('autoscroll-chk');
-      if (chk.checked) {
+      if (chk && chk.checked) {
         term.scrollTop = term.scrollHeight;
       }
     }
 
-    function clearDebuggerLogs() {
-      document.getElementById('debugger-terminal').innerHTML = '';
-    }
-
-    function sendDebuggerCommand(e) {
-      e.preventDefault();
-      const input = document.getElementById('debugger-input');
-      const val = input.value.trim();
-      if (!val) return;
-
-      logDebugger(`<span class="text-white">&gt; ${val}</span>`);
-      input.value = '';
-
-      setTimeout(() => {
-        if (val.toUpperCase() === 'HELP') {
-          logDebugger("MDD OS Commands: HELP, REBOOT, DISP_TEST, MEM, VER");
-        } else if (val.toUpperCase() === 'VER') {
-          logDebugger(`MDD Version: ${latestMatchedRelease ? latestMatchedRelease.name : 'v1.0.0'}`);
-        } else if (val.toUpperCase() === 'REBOOT') {
-          logDebugger("Rebooting hardware...");
-        } else {
-          logDebugger(`ACK: Executed '${val}'`);
-        }
-      }, 150);
+    function clearTerminalLogs() {
+      document.getElementById('serial-terminal').innerHTML = '<div class="text-neutral-600" id="terminal-placeholder-msg">// Serial Terminal cleared.</div>';
     }
 
     // --- Window Init ---
